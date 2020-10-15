@@ -16,9 +16,10 @@ class FileGUI {
     private JFrame frame;// 定義窗體
     private JMenuBar bar;// 定義選單欄
     private JTextArea textOutput;
-    private JMenu fileMenu, editMenu;// 定義"檔案"和"子選單"選單
+    private JMenu fileMenu,sqlMenu, editMenu;// 定義"檔案"和"子選單"選單
     private JMenuItem openItem, openItem2, saveItem, saveOtherItem, closeItem;// 定義條目"退出"和"子條目"選單項
-    private JMenuItem fontItem;
+    private JMenuItem sql_insertItem;//
+    private JMenuItem fontItem;//格式Menu的項目
     private FileDialog openDia, saveDia;// 定義"開啟 儲存"對話方塊
     private File file;//定義檔案
     private JPanel panel;
@@ -37,11 +38,16 @@ class FileGUI {
     public void init() {
         frame = new JFrame("讀取IO");//建立窗體物件
 
-
         frame.setVisible(true); //設定窗體可見
         bar = new JMenuBar();// 建立選單欄
 
         textOutput = new JTextArea();// 建立文字域
+        textOutput.setLineWrap(true);//自動換行設定
+
+
+        JScrollPane scrollPane=new JScrollPane(textOutput);
+
+
         keyWord = new TextField();
 
         fileMenu = new JMenu("檔案");// 建立"檔案"選單
@@ -61,19 +67,25 @@ class FileGUI {
         fileMenu.add(closeItem);//將 退出 選單項新增到 檔案 選單上
 
         bar.add(fileMenu);//將檔案新增到選單欄上
+        sqlMenu=new JMenu("資料庫操作");
         editMenu = new JMenu("格式");
 
         fontItem = new JMenuItem("字體大小");
 
 
         editMenu.add(fontItem);//增加字體大小調整
+
+        bar.add(sqlMenu);
+
+
         bar.add(editMenu);
 
 
         frame.setJMenuBar(bar);//將此窗體的選單欄設定為指定的選單欄.
         openDia = new FileDialog(frame, "Open", FileDialog.LOAD);
         saveDia = new FileDialog(frame, "Save", FileDialog.SAVE);
-        frame.add(textOutput);// 將文字域新增到窗體內
+        //frame.add(textOutput);// 將文字域新增到窗體內
+        frame.add(scrollPane);
         textOutput.requestFocus();//Kevin:focus後文字才有正常顯示,調查中
         textOutput.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -83,6 +95,7 @@ class FileGUI {
                 int len2=textOutput.getText().length();
                 String s=textOutput.getText().substring(len2-len,len2);
                 System.out.println("change:"+s);//+e.getLength()
+                current=textOutput.getText();
             }
 
             @Override
