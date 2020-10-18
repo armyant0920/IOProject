@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TestJar">
+    <output-path>$PROJECT_DIR$/out/artifacts/TestJar</output-path>
+    <root id="archive" name="TestJar.jar">
+      <element id="module-output" name="IOProject" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/out/artifacts/TestJar/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="library" level="project" name="gson-2.3.1" />
+      <element id="library" level="project" name="json-20200518" />
+      <element id="library" level="project" name="mssql-jdbc-7.4.1.jre8" />
+    </root>
+  </artifact>
+</component>

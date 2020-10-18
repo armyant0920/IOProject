@@ -2,13 +2,19 @@ package Json;
 
 
 import DBTool.DBAccess;
-import com.google.gson.JsonArray;
+
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+
+
+
+import javax.swing.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,15 +31,11 @@ public class Test {
         myList = new ArrayList<>();
         System.out.println("更新資料");
         resetData(myList);
-        for(int i=0;i<myList.size();i++){
 
-            System.out.println(myList.get(i));
-        }
-
-        insertTable();
-
-
+        readData(myList);
     }
+
+
 
     private static void resetData(ArrayList<MyItem> list) {
 
@@ -41,7 +43,9 @@ public class Test {
         try {
             URL url = new URL("https://data.boch.gov.tw/data/opendata/v2/assetsCase/4.2.json");
             URLConnection conn = url.openConnection();
+
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
             String jsonLine = null;
             StringBuilder sb = new StringBuilder();
             while ((jsonLine = br.readLine()) != null) {
@@ -54,9 +58,20 @@ public class Test {
             //
             list.clear();
             JSONArray arr = new JSONArray(jsonData);
+ /*           int index=0;
+
+PropertyChangeSupport support=new PropertyChangeSupport(index);
+
+support.addPropertyChangeListener(new PropertyChangeListener() {
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        System.out.println("new "+evt.getNewValue());
+    }
+});*/
+
             for (int i = 0; i < arr.length(); i++) {
 //                Object o=arr.getJSONObject(i);
-
+//                 index=i;
                 JSONObject obj = arr.getJSONObject(i);
 //                System.out.printf("index:%d %s\n",i,obj);
                 String caseId = obj.optString("caseId").replaceAll("'","");
@@ -66,7 +81,7 @@ public class Test {
                 String representImage = obj.optString("representImage");
                 String historyDevelopment = obj.optString("historyDevelopment");
                 list.add(new MyItem(caseId, caseName, registerReason, belongCity, representImage, historyDevelopment));
-
+                System.out.printf("index:%d,progress:%.2f%%\n",i,(float)i*100/arr.length());
                /* try{JSONArray temp=obj.getJSONArray("computeType");
                     for(int j=0;j<temp.length();j++){
                         JSONObject jb=temp.getJSONObject(i);
@@ -81,7 +96,7 @@ public class Test {
 
 
             }
-            System.out.println("end");
+            System.out.println("資料載入完畢");
 
 
         } catch (MalformedURLException e) {
@@ -90,7 +105,21 @@ public class Test {
             e.printStackTrace();
         }
 
-        System.out.println("資料載入完畢");
+
+    }
+    private class ProgressListener implements PropertyChangeListener{
+
+        private ProgressListener(){}
+        private ProgressListener(JProgressBar bar){
+
+
+        }
+
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+
+        }
     }
 
 
@@ -132,6 +161,15 @@ public class Test {
         System.out.println("資料匯入資料庫完畢");
 
     }
+    private static void readData(ArrayList list){
+
+        for(int i=0;i<list.size();i++){
+            System.out.println(list.get(i));
+
+        }
+    }
+
+
 
 
 }

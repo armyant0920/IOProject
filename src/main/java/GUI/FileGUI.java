@@ -1,15 +1,19 @@
+package GUI;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+
+/**
+ *CURD
+ * 插入、讀取、查詢、刪除
+ */
 
 class FileGUI {
 

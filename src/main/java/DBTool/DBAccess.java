@@ -53,6 +53,11 @@ public class DBAccess {
         DBAccess.password = password;
     }
 
+    public static void setting(){
+
+
+    }
+
     public static Connection openDB() {
 
     /*    try {
@@ -83,4 +88,6 @@ public class DBAccess {
             throwables.printStackTrace();
         }
     }
+
+
 }
