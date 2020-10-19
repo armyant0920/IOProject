@@ -103,8 +103,9 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
             if (!remember) {
                 DBRecorder.deleteFile();
             }else{
-                DBRecorder.writeData();
                 DBRecorder.setRemember(true);
+                DBRecorder.writeData();
+
             }
             Connection conn = DBRecorder.getConnect();
             if (conn != null) {

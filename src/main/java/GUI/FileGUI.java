@@ -26,13 +26,11 @@ class FileGUI {
     private JMenuItem fontItem;//格式Menu的項目
     private FileDialog openDia, saveDia;// 定義"開啟 儲存"對話方塊
     private File file;//定義檔案
-    private JPanel panel;
-    private int fontStyle;
     private String current;
     private int fontSize = 12;//預設值12
     private static int Default_size[] = {12, 16, 20, 24, 28, 32};
     private static final Dimension DEFAULT_SIZE = new Dimension(600, 500);
-    private TextField keyWord;
+
 
     FileGUI() {
         init();
@@ -47,44 +45,28 @@ class FileGUI {
 
         textOutput = new JTextArea();// 建立文字域
         textOutput.setLineWrap(true);//自動換行設定
-
-
         JScrollPane scrollPane=new JScrollPane(textOutput);
-
-
-        keyWord = new TextField();
-
         fileMenu = new JMenu("檔案");// 建立"檔案"選單
-
-
         openItem = new JMenuItem("開啟");//建立"開啟"選單項
         openItem2 = new JMenuItem("開啟URL");//console
-
         saveItem = new JMenuItem("儲存");//建立"儲存"選單項
         saveOtherItem = new JMenuItem("另存");
         closeItem = new JMenuItem("退出");//建立“退出"選單項
-
         fileMenu.add(openItem);//將 開啟 選單項新增到 檔案 選單上
         fileMenu.add(openItem2);//將 開啟 選單項新增到 檔案 選單上
         fileMenu.add(saveItem);//將 儲存 選單項新增到 檔案 選單上
         fileMenu.add(saveOtherItem);
         fileMenu.add(closeItem);//將 退出 選單項新增到 檔案 選單上
-
         bar.add(fileMenu);//將檔案新增到選單欄上
         sqlMenu=new JMenu("資料庫操作");
         editMenu = new JMenu("格式");
 
         fontItem = new JMenuItem("字體大小");
 
-
         editMenu.add(fontItem);//增加字體大小調整
 
         bar.add(sqlMenu);
-
-
         bar.add(editMenu);
-
-
         frame.setJMenuBar(bar);//將此窗體的選單欄設定為指定的選單欄.
         openDia = new FileDialog(frame, "Open", FileDialog.LOAD);
         saveDia = new FileDialog(frame, "Save", FileDialog.SAVE);
@@ -312,8 +294,6 @@ class FileGUI {
 //                    frame.setBounds(300, 100, 600, 500);//設定窗體位置和大小
 
                 }
-
-
             }
         });
 
@@ -332,7 +312,6 @@ class FileGUI {
             }
         });
     }
-
 
     public static void main(String[] args) {
         new FileGUI();

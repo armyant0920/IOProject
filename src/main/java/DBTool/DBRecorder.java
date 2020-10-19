@@ -1,5 +1,6 @@
 package DBTool;
 
+import ImageTool.DownloadImage;
 import com.google.gson.Gson;
 
 import javax.swing.*;
@@ -8,7 +9,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -35,11 +40,11 @@ public class DBRecorder {
     private static String database;
     private static String user;
     private static String password;
-    private static boolean remember=false;//預設不儲存登入資訊
+    private static boolean remember = false;//預設不儲存登入資訊
+
     public static void setRemember(boolean remember) {
         DBRecorder.remember = remember;
     }
-
 
 
     public static String getServer() {
@@ -78,8 +83,8 @@ public class DBRecorder {
     DBRecorder() {
 
 //        dirPath = this.getClass().getResource("/").getPath();
-        dirPath="C:\\DBRecord\\";
-        System.out.println(dirPath+recordFile);
+        dirPath = "C:\\DBRecord\\";
+        System.out.println(dirPath + recordFile);
         recordFile = new File(dirPath + recordPath);
         if (recordFile.exists()) {
             System.out.println(recordFile.getAbsolutePath());
@@ -94,7 +99,7 @@ public class DBRecorder {
                 database = param.getDatabae();
                 user = param.getUser();
                 password = param.getPassword();
-                remember=param.isRemember();
+                remember = param.isRemember();
                 System.out.println(server);
                 System.out.println(port);
                 System.out.println(database);
@@ -133,15 +138,16 @@ public class DBRecorder {
         }
     }
 
-    public static void updateParams(String[] params){
-        server=params[0];
-        port=params[1];
-        database=params[2];
-        user=params[3];
-        password=params[4];
+    public static void updateParams(String[] params) {
+        server = params[0];
+        port = params[1];
+        database = params[2];
+        user = params[3];
+        password = params[4];
 
 
     }
+
     private static void writeData(File file, String s, boolean append) throws IOException {
         if (file.exists()) {
             //覆蓋舊紀錄,append=false
@@ -153,15 +159,14 @@ public class DBRecorder {
         }
     }
 
-    public static void writeData()  {
-
+    public static void writeData() {
 
 
         if (!recordFile.exists()) {
             createFile(recordFile);
 
         }
-        DBParam param=new DBParam(server.replace(":",""),port,database,user,password,remember);
+        DBParam param = new DBParam(server.replace(":", ""), port, database, user, password, remember);
         Gson gson = new Gson();
         String s = gson.toJson(param);
         try {
@@ -189,8 +194,8 @@ public class DBRecorder {
         }
     }
 
-    public static void deleteFile(){
-        File file=recordFile;
+    public static void deleteFile() {
+        File file = recordFile;
         if (file.exists()) {
             if (file.isFile()) {//如果是一個標準檔案
                 file.delete();
@@ -216,6 +221,20 @@ public class DBRecorder {
         br.close();
         return sb.toString();
     }
+    public static Connection getConnect(String server,String port,String database,String user,String password){
+        try {
+            return getConnection("jdbc:sqlserver://"
+                    + server+":"
+                    + port
+                    + ";databaseName=" + database, user, password);
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
+
+
+    }
 
     public static Connection getConnect() {
         try {
@@ -231,17 +250,16 @@ public class DBRecorder {
 
     }
 
-    public static void executeUpdate(Connection conn){
+    public static void executeUpdate(Connection conn) {
 
 
-        String sql=JOptionPane.showInputDialog("input update sql");
+        String sql = JOptionPane.showInputDialog("input update sql");
 
-        try(Statement st=conn.createStatement();
+        try (Statement st = conn.createStatement();
 
-        )
-        {
-            int i=st.executeUpdate(sql);
-            JOptionPane.showMessageDialog(null,i+"筆資料已更新","update",JOptionPane.PLAIN_MESSAGE);
+        ) {
+            int i = st.executeUpdate(sql);
+            JOptionPane.showMessageDialog(null, i + "筆資料已更新", "update", JOptionPane.PLAIN_MESSAGE);
 
 
         } catch (SQLException e) {
@@ -257,9 +275,9 @@ public class DBRecorder {
         try (Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql);
         ) {
-                Vector<String> columns = Meta.getVColumns(rs);
-                Vector rowData=getData(rs,columns);
-                createTable(rowData,columns);
+            Vector<String> columns = Meta.getVColumns(rs);
+            Vector rowData = getData(rs, columns);
+            createTable(rowData, columns);
 
 /*                //列印標題
 
@@ -287,29 +305,25 @@ public class DBRecorder {
             System.out.println(sb.toString());*/
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,e.getMessage(),e.getClass().getName(),JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e.getMessage(), e.getClass().getName(), JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
 
     /**
-     *
      * @return
      */
-    private static Vector getData(ResultSet rs,Vector<String>columns) throws SQLException {
+    private static Vector getData(ResultSet rs, Vector<String> columns) throws SQLException {
 
-        Vector<Vector<Object>>rowData=new Vector<>();
+        Vector<Vector<Object>> rowData = new Vector<>();
 
-
-        while(rs.next()){
-            Vector<Object>row=new Vector<>();
-            for(int i=0;i<columns.size();i++){
+        while (rs.next()) {
+            Vector<Object> row = new Vector<>();
+            for (int i = 0; i < columns.size(); i++) {
                 row.add(rs.getString(columns.get(i)));
 
             }
             rowData.add(row);
-
-
         }
 
         return rowData;
@@ -318,15 +332,16 @@ public class DBRecorder {
 
     /**
      * 將資料庫回傳資料存成CSV格式
+     *
      * @param rs Result set
      */
 
 
-    private static String csvFormat(ArrayList<String> columns,ResultSet rs) throws SQLException {
-        StringBuilder sb=new StringBuilder();
+    private static String csvFormat(ArrayList<String> columns, ResultSet rs) throws SQLException {
+        StringBuilder sb = new StringBuilder();
         while (rs.next()) {
-            for(int j=0;j<columns.size();j++){
-                sb.append(rs.getString(columns.get(j))+",");
+            for (int j = 0; j < columns.size(); j++) {
+                sb.append(rs.getString(columns.get(j)) + ",");
 
             }
             sb.append("\n");
@@ -336,47 +351,129 @@ public class DBRecorder {
 
     }
 
-    private static String jsonFormat(ArrayList<String>columns,ResultSet rs) throws SQLException {
-      StringBuilder sb=new StringBuilder();
-      while (rs.next()){
+    private static String jsonFormat(ArrayList<String> columns, ResultSet rs) throws SQLException {
+        StringBuilder sb = new StringBuilder();
+        while (rs.next()) {
 
-          sb.append("");
-      }
-      return sb.toString();
+            sb.append("");
+        }
+        return sb.toString();
     }
 
     /**
-     *
      * @param rowData
      * @param columns
      */
-    private static void createTable(Vector rowData,Vector columns){
+    private static void createTable(Vector rowData, Vector columns) {
 
 //特化功能部分,考慮選擇到某一列時,自動抓URL欄位顯示圖片
-        JFrame frame=new JFrame();
+        JFrame frame = new JFrame();
 
         frame.setDefaultLookAndFeelDecorated(true);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setSize(500,500);
+        frame.setSize(500, 500);
         frame.setLocationRelativeTo(null);
-        Container cp=frame.getContentPane();
-        DefaultTableModel dtm=new DefaultTableModel(rowData,columns);
-        JTable table=new JTable(dtm);
+        Container cp = frame.getContentPane();
+        DefaultTableModel dtm = new DefaultTableModel(rowData, columns);
+        JTable table = new JTable(dtm);
         dtm.setColumnIdentifiers(columns);
-        TableRowSorter<TableModel>sorter=new TableRowSorter<TableModel>(dtm);
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(dtm);
         table.setRowSorter(sorter);
 
-        table.setPreferredScrollableViewportSize(new Dimension(500,500));
+        table.setPreferredScrollableViewportSize(new Dimension(500, 500));
         table.setCellSelectionEnabled(true);
         table.setRowSelectionAllowed(true);
         table.setColumnSelectionAllowed(true);
 
-        cp.add(new JScrollPane(table),BorderLayout.CENTER);
+        cp.add(new JScrollPane(table), BorderLayout.CENTER);
+        JButton btn_Export = new JButton("export CSV");
+        JButton btn_Image=new JButton("imageURL");
+        JPanel southjPanel=new JPanel(new GridLayout());
+        southjPanel.add(btn_Export);
+        southjPanel.add(btn_Image);
+
+//        cp.add(btn_Export, BorderLayout.SOUTH);
+//        cp.add(btn_Update,BorderLayout.SOUTH);
+        cp.add(southjPanel,BorderLayout.SOUTH);
+        /**
+         * 輸出CSV按鈕
+         */
+        btn_Export.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                File file=null;
+                FileDialog dialog = new FileDialog(frame, "儲存", FileDialog.SAVE);
+                dialog.setVisible(true);
+                String dirpath = dialog.getDirectory();//獲取儲存檔案路徑並儲存到字串中。
+                String fileName = dialog.getFile();////獲取打儲存檔名稱並儲存到字串中
+                if (dirpath == null || fileName == null)//判斷路徑和檔案是否為空
+                {
+                    return;//空操作
+                } else {
+                     file = new File(dirpath, fileName);//檔案不為空，新建一個路徑和名稱
+                }
+
+            int row = table.getRowCount();
+            int col = table.getColumnCount();
+                try
+            {
+                try (
+                        //FileWriter fw = new FileWriter(file);
+                     BufferedWriter bwr=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file,true),"utf-8"))
+
+                ) {
+                    for (int i = 0; i < row; i++) {
+                        for (int j = 0; j < col; j++) {
+                            Object val = table.getValueAt(i, j);
+                            if (val != null)
+                            {bwr.write(val+",");}
+                            else{
+                                bwr.write(",");
+                            }
+                        }
+                        bwr.write("\n");
+                    }
+
+                    bwr.flush();
+                    bwr.close();
+                }
+            } catch(
+            Exception err)
+
+            {
+                err.printStackTrace();
+            }
+
+        }
+    });
+        /**
+         * 連結圖片
+         */
+        btn_Image.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row=table.getSelectedRow();
+                int column=table.getSelectedColumn();
+                String s= (String) table.getValueAt(row,column);
+                System.out.println(s);
+
+                URL url= null;
+                try {
+                    url = new URL(s);
+                    DownloadImage.showURLImage(url);
+                } catch (MalformedURLException malformedURLException) {
+                    malformedURLException.printStackTrace();
+                }
+
+
+            }
+        });
         frame.setVisible(true);
 
-
-
-    }
+}
 
 
 }
+
+
+
