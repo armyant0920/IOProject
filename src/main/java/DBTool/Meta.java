@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.TreeSet;
+import java.util.Vector;
 
 public class Meta {
 
@@ -44,6 +45,16 @@ public class Meta {
             columns.add(s);
         }
         return columns;
+    }
+
+    public static Vector<String> getVColumns(ResultSet rs) throws SQLException {
+        Vector<String>columns=new Vector<>();
+        ResultSetMetaData rsmd=rs.getMetaData();
+        for(int i=1;i<=rsmd.getColumnCount();i++){
+            columns.add(rsmd.getColumnName(i));
+        }
+        return columns;
+
     }
 
 

@@ -79,6 +79,7 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
         cancel.addActionListener(this);
         //
         this.add(radio);
+        radio.setSelected(DBRecorder.isRemember());
         radio.addItemListener(this);
 
     }
@@ -103,12 +104,14 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
                 DBRecorder.deleteFile();
             }else{
                 DBRecorder.writeData();
+                DBRecorder.setRemember(true);
             }
             Connection conn = DBRecorder.getConnect();
             if (conn != null) {
                 JOptionPane.showMessageDialog(null, "connected", "DB", JOptionPane.INFORMATION_MESSAGE);
 
                 DBRecorder.executeQuery(conn);
+
 //                DBRecorder.executeUpdate(conn);
                 try {
                     conn.close();
@@ -174,11 +177,13 @@ public class DBDialog extends JFrame {
     }
 
     public static void main(String[] args) {
+
         DBRecorder.getInstance();
         JFrame.setDefaultLookAndFeelDecorated(true);
         JDialog.setDefaultLookAndFeelDecorated(true);
         DBDialog frame = new DBDialog();
         frame.pack();
         frame.setVisible(true);
+
     }
 }

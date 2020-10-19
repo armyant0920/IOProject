@@ -6,16 +6,20 @@ public class DBParam {
     private  String databae;
     private  String user;
     private  String password;
+    private boolean remember;
+
 
     public DBParam() {
     }
 
-    public DBParam(String server, String port, String databae, String user, String password) {
+    public DBParam(String server, String port, String databae, String user, String password,boolean remember) {
         this.server = server;
         this.port = port;
         this.databae = databae;
         this.user = user;
         this.password = password;
+        this.remember=remember;
+
     }
 
     public String getServer() {
@@ -56,5 +60,13 @@ public class DBParam {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isRemember() {
+        return remember;
+    }
+
+    public void setRemember(boolean remember) {
+        this.remember = remember;
     }
 }
