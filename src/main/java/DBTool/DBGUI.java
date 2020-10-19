@@ -65,15 +65,15 @@ import java.util.ArrayList;
            DB_set=new JMenuItem("設定參數");//設定DB連線參數
             DB_query=new JMenuItem("查詢Table");//新增查詢選項
 
-            saveItem = new JMenuItem("儲存");//建立"儲存"選單項
-            saveOtherItem = new JMenuItem("另存");
-            closeItem = new JMenuItem("退出");//建立“退出"選單項
+//            saveItem = new JMenuItem("儲存");//建立"儲存"選單項
+//            saveOtherItem = new JMenuItem("另存");
+//            closeItem = new JMenuItem("退出");//建立“退出"選單項
 
             fileMenu.add(openCSV);//將 開啟 選單項新增到 檔案 選單上
             fileMenu.add(openURL);//將 開啟 選單項新增到 檔案 選單上
-            fileMenu.add(saveItem);//將 儲存 選單項新增到 檔案 選單上
-            fileMenu.add(saveOtherItem);
-            fileMenu.add(closeItem);//將 退出 選單項新增到 檔案 選單上
+//            fileMenu.add(saveItem);//將 儲存 選單項新增到 檔案 選單上
+//            fileMenu.add(saveOtherItem);
+//            fileMenu.add(closeItem);//將 退出 選單項新增到 檔案 選單上
 
             bar.add(fileMenu);//將檔案新增到選單欄上
             sqlMenu=new JMenu("資料庫操作");
@@ -249,7 +249,7 @@ import java.util.ArrayList;
                 }
             });
 
-            saveItem.addActionListener(new ActionListener() {
+           /* saveItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     if (file == null) {
                         saveDia.setVisible(true);//顯示儲存檔案對話方塊
@@ -270,9 +270,9 @@ import java.util.ArrayList;
                         e1.printStackTrace();//丟擲IO異常
                     }
                 }
-            });
+            });*/
 
-            saveOtherItem.addActionListener(new ActionListener() {
+            /*saveOtherItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
 
                     saveDia.setVisible(true);//顯示儲存檔案對話方塊
@@ -293,7 +293,7 @@ import java.util.ArrayList;
                         e1.printStackTrace();//丟擲IO異常
                     }
                 }
-            });
+            });*/
 
 
             fontItem.addActionListener(new ActionListener() {
@@ -329,16 +329,15 @@ import java.util.ArrayList;
             });
 
             //退出選單項監聽
-            closeItem.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    System.exit(0);
-                }
-            });
-        }
+//            closeItem.addActionListener(new ActionListener() {
+//                public void actionPerformed(ActionEvent e) {
+//                    System.exit(0);
+//                }
 
 
-        public static void main(String[] args) {
+
+       /* public static void main(String[] args) {
             new GUI.FileGUI();
-        }
+        }*/
     }
 }
