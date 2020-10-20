@@ -2,9 +2,10 @@ package DBTool;
 
 import ImageTool.DownloadImage;
 import com.google.gson.Gson;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableColumnModel;
+
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -14,17 +15,32 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import static java.sql.DriverManager.getConnection;
 
 public class DBRecorder {
     private String dirPath;
+    private Map<String, Meta.Column> schema;
+
+    public Map<String, Meta.Column> getSchema() {
+        return schema;
+    }
+
+    public void setSchema(Map<String, Meta.Column> schema) {
+        this.schema = schema;
+    }
+
+    //
+    private static BasicDataSource ds;
+
+
+
+//
     private final String recordPath = "Login.txt";
     private final String SYS_MESSAGE = "Login";
     private final String SYS_CREATE_NEW = "檔案不存在,重新建立";
@@ -81,7 +97,20 @@ public class DBRecorder {
     }
 
     DBRecorder() {
+        /**
+         *
+         */
+        schema=new HashMap<>();//初始化schema
+        ds=new BasicDataSource();
+        ds.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        ds.setUrl("jdbc:sqlserver://"+server+":"+port+";databaseName="+database);
+        ds.setUsername(user);
+        ds.setPassword(password);
+        ds.setMaxTotal(50);
+        ds.setMaxIdle(20);
 
+
+        //
 //        dirPath = this.getClass().getResource("/").getPath();
         dirPath = "C:\\DBRecord\\";
         System.out.println(dirPath + recordFile);
@@ -221,6 +250,21 @@ public class DBRecorder {
         br.close();
         return sb.toString();
     }
+
+    /**
+     *
+     * @return 嘗試直接返回Statement
+     */
+    public static Statement getStatement(){
+
+        try {
+            return ds.getConnection().createStatement();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public static Connection getConnect(String server,String port,String database,String user,String password){
         try {
             return getConnection("jdbc:sqlserver://"
@@ -232,7 +276,6 @@ public class DBRecorder {
             throwables.printStackTrace();
         }
         return null;
-
 
     }
 
@@ -252,7 +295,6 @@ public class DBRecorder {
 
     public static void executeUpdate(Connection conn) {
 
-
         String sql = JOptionPane.showInputDialog("input update sql");
 
         try (Statement st = conn.createStatement();
@@ -266,7 +308,6 @@ public class DBRecorder {
             e.printStackTrace();
         }
 
-
     }
 
     public static void executeQuery(Connection conn) {
@@ -274,10 +315,20 @@ public class DBRecorder {
         String sql = JOptionPane.showInputDialog("input query sql");
         try (Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql);
+
         ) {
-            Vector<String> columns = Meta.getVColumns(rs);
+            Vector<Meta.Column> columns = Meta.getVColumns(rs);
+            Vector<String>columnNames=new Vector<>();
+            for(int i=0;i<columns.size();i++){
+
+                columnNames.add(columns.get(i).getColumnName());
+            }
+
+
             Vector rowData = getData(rs, columns);
-            createTable(rowData, columns);
+
+
+            createTable(rowData, columnNames);
 
 /*                //列印標題
 
@@ -313,14 +364,14 @@ public class DBRecorder {
     /**
      * @return
      */
-    private static Vector getData(ResultSet rs, Vector<String> columns) throws SQLException {
+    private static Vector getData(ResultSet rs, Vector<Meta.Column> columns) throws SQLException {
 
         Vector<Vector<Object>> rowData = new Vector<>();
 
         while (rs.next()) {
             Vector<Object> row = new Vector<>();
             for (int i = 0; i < columns.size(); i++) {
-                row.add(rs.getString(columns.get(i)));
+                row.add(rs.getString(columns.get(i).getColumnName()));
 
             }
             rowData.add(row);
@@ -392,8 +443,7 @@ public class DBRecorder {
         southjPanel.add(btn_Export);
         southjPanel.add(btn_Image);
 
-//        cp.add(btn_Export, BorderLayout.SOUTH);
-//        cp.add(btn_Update,BorderLayout.SOUTH);
+
         cp.add(southjPanel,BorderLayout.SOUTH);
         /**
          * 輸出CSV按鈕

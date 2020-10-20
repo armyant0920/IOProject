@@ -9,8 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.*;
 
@@ -99,7 +100,48 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginin) {
 
+            //select table_name,column_name,data_type from information_schema.columns
             DBRecorder.updateParams(getAddress());
+            if(!remember){
+                DBRecorder.deleteFile();
+
+            }else{
+                DBRecorder.setRemember(true);
+
+            }
+            try(
+            Statement st=DBRecorder.getStatement();
+            ResultSet rs=st.executeQuery("select table_name,column_name,data_type INFORMATION_SCHEMA.COLUMNS")
+
+            ){
+                //概念是不重複的table_name,內含column_name & 4data_type
+                Map<String, Meta.Column> schema=new HashMap<>();
+                while(rs.next()){
+                    //餵資料給DBRecorder,並準備顯示Table
+
+
+
+
+
+
+
+
+
+
+                }
+
+
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+
+
+
+
+
+            /*DBRecorder.updateParams(getAddress());
             if (!remember) {
                 DBRecorder.deleteFile();
             }else{
@@ -122,7 +164,7 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
 
             } else {
                 JOptionPane.showMessageDialog(null, "connect fail", "DB", JOptionPane.ERROR_MESSAGE);
-            }
+            }*/
         }
         if (e.getSource() == cancel) {
             this.dispose();

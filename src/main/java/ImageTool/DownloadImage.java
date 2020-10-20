@@ -138,6 +138,7 @@ public class DownloadImage {
             con.setRequestProperty("User-Agent", "Mozilla/5.0");
 
             image = ImageIO.read(con.getInputStream());
+
 //            image=ImageIO.read(url);
 
             JFrame frame = new JFrame("image");
@@ -156,6 +157,13 @@ public class DownloadImage {
                         label.setSize(frame.getSize());
                         label.setIcon(new ImageIcon(reSizeIconImage(frame.getSize(),image)));
                         System.out.println(label.getSize());
+
+                    }
+                    if(e.getNewState()==0){//應該是回復初始狀態?
+                        label.setSize(frame.getSize());
+                        label.setIcon(new ImageIcon(reSizeIconImage(frame.getSize(),image)));
+                        System.out.println(label.getSize());
+
 
                     }
 
