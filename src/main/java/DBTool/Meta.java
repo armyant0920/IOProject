@@ -3,7 +3,6 @@ package DBTool;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.*;
 
 public class Meta {
@@ -46,62 +45,68 @@ public class Meta {
         return columns;
     }
 
-    /**
-     *
-     * @param rs
-     * @return 回傳Map,Key為欄位名稱,值為欄位型態
-     * @throws SQLException
-     */
-    public static Vector<Column> getVColumns(ResultSet rs) throws SQLException {
+
+
+
+   /* public static Vector<Column> getVColumns(ResultSet rs) throws SQLException {
         Vector<Column>columns=new Vector<>();
         ResultSetMetaData rsmd=rs.getMetaData();
         for(int i=1;i<=rsmd.getColumnCount();i++){
 
-//            columns.add(rsmd.getColumnName(i),rsmd.getColumnType(i));
-            columns.add(new Column(rsmd.getColumnName(i),rsmd.getColumnType(i)));
+            columns.add(rsmd.getColumnName(i),rsmd.getColumnType(i));
+            columns.add(new Column(rsmd.getColumnName(i)));//rsmd.getColumnType(i)
 
         }
         return columns;
 
-    }
-
+    }*/
 
 
 
     public static class Column{
 
-        private String columnName;
-        private int columnType;
+        private String column_name;
+        private String data_type;
 
-        public Column(String columnName, int columnType) {
-            this.columnName = columnName;
-            this.columnType = columnType;
+        public Column(String name, String type) {
+            this.column_name = name;
+            this.data_type = type;
         }
 
-        public String getColumnName() {
-            return columnName;
+        public String getColumn_name() {
+            return column_name;
         }
 
-        public void setColumnName(String columnName) {
-            this.columnName = columnName;
+        public void setColumn_name(String column_name) {
+            this.column_name = column_name;
         }
 
-        public int getColumnType() {
-            return columnType;
+        public String getData_type() {
+            return data_type;
         }
-
-        public void setColumnType(int columnType) {
-            this.columnType = columnType;
-        }
+        //原則上部會去改原始資料表的結構,而且也不見得好改
+      /*  public void setData_type(String data_type) {
+            this.data_type = data_type;
+        }*/
     }
 
     public static class Table{
-        private String table_name;
-        private List<Column>columns;
 
-        public Table(List<Column> columns) {
-            this.columns = columns;
+
+        private String table_name;
+        private Vector<Column>columns;
+
+        public Table(String name){
+            this.table_name=name;
+            this.columns=new Vector<>();
+
         }
+
+       public void addColumn(Column c){
+
+            this.columns.add(c);
+
+       }
 
         public String getTable_name() {
             return table_name;
@@ -111,11 +116,11 @@ public class Meta {
             this.table_name = table_name;
         }
 
-        public List<Column> getColumns() {
+        public Vector<Column> getColumns() {
             return columns;
         }
 
-        public void setColumns(List<Column> columns) {
+        public void setColumns(Vector<Column> columns) {
             this.columns = columns;
         }
     }

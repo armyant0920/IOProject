@@ -10,8 +10,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.*;
 
@@ -87,7 +89,7 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
 
 
     public String[] getAddress() {
-        address[0] = serverField.getText() + ":";
+        address[0] = serverField.getText() ;
 
         address[1] = portField.getText();
         address[2] = databaseField.getText();
@@ -111,33 +113,66 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
             }
             try(
             Statement st=DBRecorder.getStatement();
-            ResultSet rs=st.executeQuery("select table_name,column_name,data_type INFORMATION_SCHEMA.COLUMNS")
+
+            ResultSet rs=st.executeQuery("use "+DBRecorder.getDatabase()+" select table_name,column_name,data_type from INFORMATION_SCHEMA.COLUMNS")
+
 
             ){
-                //概念是不重複的table_name,內含column_name & 4data_type
-                Map<String, Meta.Column> schema=new HashMap<>();
+                JOptionPane.showMessageDialog(null,"Connected to "+DBRecorder.getDatabase(),"message",JOptionPane.INFORMATION_MESSAGE);
+                //概念是不重複的table_name,內含column_name & data_type
+//                Set
+                ArrayList<Meta.Column>cols;
+
+//                Meta.Column column=new Meta.Column();
+                Map<Meta.Table, Meta.Column> schema=new HashMap<>();
+                String tempName="null";//暫存表格
+
+                Vector<Meta.Table> tableList=new Vector<>();//預先準備這個DB的所有表格資料
+                Meta.Table tempTable=null;
                 while(rs.next()){
-                    //餵資料給DBRecorder,並準備顯示Table
+                    //餵資料給DBRecorder,並準備selectTable
+
+                    String table_name=rs.getString("table_name");//
+                    String column_name=rs.getString("column_name");
+                    String data_type=rs.getString("data_type");
 
 
+                    if(!tempName.equals(table_name)){
+                        //目前假設抓回來的資料依表格名稱排序,
+                        // 那麼如果出現新的表格名稱,就新增一個table物件,
 
+                        Meta.Table table=new Meta.Table(table_name);
+                        tableList.add(table);//將這張表加進去
+                        tempTable=table;
+                        tempName=table_name;
 
-
-
-
-
-
+                    }
+                    //將資料寫入目前的table
+                    tempTable.addColumn(new Meta.Column(column_name,data_type));
 
                 }
+                //執行後顯示dialog
+//                String s[]={"C","D","e"};
+                DB_tb_select select=new DB_tb_select(tableList);
+                Meta.Table pick= select.getKey();
+                DBRecorder.executeQuery(pick);
+//                System.out.println(select.getResult());
+//                DB_TableSelectDialog dialog=new DB_TableSelectDialog(tableList);
+//                Meta.Table table_selected=dialog.getResult();//取得選取的table
+//                DBRecorder.executeQuery(table_selected);
+
+               /* DB_TableSelectDialog dialog=new DB_TableSelectDialog(tableList);
+
+
+
+
+                //將table資料另開視窗顯示*/
 
 
 
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-
-
-
 
 
 

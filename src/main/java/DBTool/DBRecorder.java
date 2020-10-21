@@ -101,13 +101,7 @@ public class DBRecorder {
          *
          */
         schema=new HashMap<>();//初始化schema
-        ds=new BasicDataSource();
-        ds.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        ds.setUrl("jdbc:sqlserver://"+server+":"+port+";databaseName="+database);
-        ds.setUsername(user);
-        ds.setPassword(password);
-        ds.setMaxTotal(50);
-        ds.setMaxIdle(20);
+
 
 
         //
@@ -165,6 +159,13 @@ public class DBRecorder {
             }
 
         }
+        ds=new BasicDataSource();
+        ds.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        ds.setUrl("jdbc:sqlserver://"+server+":"+port+";databaseName="+database);
+        ds.setUsername(user);
+        ds.setPassword(password);
+        ds.setMaxTotal(50);
+        ds.setMaxIdle(20);
     }
 
     public static void updateParams(String[] params) {
@@ -173,6 +174,12 @@ public class DBRecorder {
         database = params[2];
         user = params[3];
         password = params[4];
+        ds.setUrl("jdbc:sqlserver://"+server+":"+port+";databaseName="+database);
+        ds.setUsername(user);
+        ds.setPassword(password);
+        //保留針對使用者設定調整的可能
+        ds.setMaxTotal(50);
+        ds.setMaxIdle(20);
 
 
     }
@@ -258,6 +265,7 @@ public class DBRecorder {
     public static Statement getStatement(){
 
         try {
+            System.out.printf("URL:%s\nuser:%s\npassword:%s\n",ds.getUrl(),ds.getUsername(),ds.getPassword());
             return ds.getConnection().createStatement();
 
         } catch (SQLException e) {
@@ -267,6 +275,7 @@ public class DBRecorder {
     }
     public static Connection getConnect(String server,String port,String database,String user,String password){
         try {
+
             return getConnection("jdbc:sqlserver://"
                     + server+":"
                     + port
@@ -310,18 +319,25 @@ public class DBRecorder {
 
     }
 
-    public static void executeQuery(Connection conn) {
+    /**
+     *
+     * @param pickTable 根據pickTable的名稱,取得對應資料
+     */
+    public static void executeQuery(Meta.Table pickTable) {
 
-        String sql = JOptionPane.showInputDialog("input query sql");
-        try (Statement st = conn.createStatement();
+        //String sql = JOptionPane.showInputDialog("input query sql");
+        String sql="select*from "+pickTable.getTable_name();
+        try (Statement st = ds.getConnection().createStatement();
              ResultSet rs = st.executeQuery(sql);
 
         ) {
-            Vector<Meta.Column> columns = Meta.getVColumns(rs);
+            Vector<Meta.Column> columns=pickTable.getColumns();
+            //Vector<Meta.Column> columns = Meta.getVColumns(rs);
             Vector<String>columnNames=new Vector<>();
             for(int i=0;i<columns.size();i++){
 
-                columnNames.add(columns.get(i).getColumnName());
+                columnNames.add(columns.get(i).getColumn_name());
+                        //+"\n"+columns.get(i).getData_type());
             }
 
 
@@ -371,8 +387,12 @@ public class DBRecorder {
         while (rs.next()) {
             Vector<Object> row = new Vector<>();
             for (int i = 0; i < columns.size(); i++) {
-                row.add(rs.getString(columns.get(i).getColumnName()));
+                row.add(rs.getString(columns.get(i).getColumn_name()));
 
+
+            }
+            for(Object o:row){
+                System.out.println((String)o);
             }
             rowData.add(row);
         }
