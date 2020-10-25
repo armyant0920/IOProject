@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class JsonTest {
 
@@ -21,6 +22,7 @@ public class JsonTest {
         ArrayList<Car>carList=new ArrayList<>();
         carList.add(car1);
         carList.add(car2);
+
 
         String myJSON=gsonPretty.toJson(carList);
         System.out.printf("陣列資料%s\n",myJSON);

@@ -62,7 +62,7 @@ public class DBParam {
         this.password = password;
     }
 
-    public boolean isRemember() {
+    public boolean getRemember() {
         return remember;
     }
 

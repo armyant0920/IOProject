@@ -1,6 +1,6 @@
 package DBLab;
 
-import DBTool.DBDialog;
+
 
 import java.sql.*;
 

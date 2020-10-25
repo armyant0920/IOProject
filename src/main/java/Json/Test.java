@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 
-
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -24,24 +23,23 @@ import java.util.ArrayList;
 
 public class Test {
 
-    private static ArrayList<MyItem> myList;
+    private static ArrayList<SpotPojo> myList;
 
 
     public static void main(String[] args) {
         myList = new ArrayList<>();
         System.out.println("更新資料");
         resetData(myList);
-
+        insertTable();
         readData(myList);
     }
 
 
-
-    private static void resetData(ArrayList<MyItem> list) {
+    private static void resetData(ArrayList<SpotPojo> list) {
 
 
         try {
-            URL url = new URL("https://data.boch.gov.tw/data/opendata/v2/assetsCase/4.2.json");
+            URL url = new URL("https://data.boch.gov.tw/opendata/assetsCase/3.1.json");
             URLConnection conn = url.openConnection();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -74,14 +72,24 @@ support.addPropertyChangeListener(new PropertyChangeListener() {
 //                 index=i;
                 JSONObject obj = arr.getJSONObject(i);
 //                System.out.printf("index:%d %s\n",i,obj);
-                String caseId = obj.optString("caseId").replaceAll("'","");
+                String caseId = obj.optString("caseId").replaceAll("'", "");
                 String caseName = obj.optString("caseName");
-                String registerReason = obj.optString("registerReason");
+                String registerDate = obj.optString("registerDate");
                 String belongCity = obj.optString("belongCity");
+                double longitude = Double.parseDouble(String.valueOf(obj.optDouble("longitude")));
+                double latitude = Double.parseDouble(String.valueOf(obj.optDouble("latitude")));
                 String representImage = obj.optString("representImage");
-                String historyDevelopment = obj.optString("historyDevelopment");
-                list.add(new MyItem(caseId, caseName, registerReason, belongCity, representImage, historyDevelopment));
-                System.out.printf("index:%d,progress:%.2f%%\n",i,(float)i*100/arr.length());
+                String briefDescribe = obj.optString("briefDescribe");
+                list.add(new SpotPojo(
+                        caseId,
+                        caseName,
+                        registerDate,
+                        belongCity,
+                        longitude,
+                        latitude,
+                        representImage,
+                        briefDescribe));
+                System.out.printf("index:%d,progress:%.2f%%\n", i, (float) i * 100 / arr.length());
                /* try{JSONArray temp=obj.getJSONArray("computeType");
                     for(int j=0;j<temp.length();j++){
                         JSONObject jb=temp.getJSONObject(i);
@@ -93,7 +101,6 @@ support.addPropertyChangeListener(new PropertyChangeListener() {
 
 
 //                System.out.printf("index:%d name:%s\n",i,obj.getString("recorder"));
-
 
             }
             System.out.println("資料載入完畢");
@@ -107,11 +114,12 @@ support.addPropertyChangeListener(new PropertyChangeListener() {
 
 
     }
-    private class ProgressListener implements PropertyChangeListener{
 
-        private ProgressListener(){}
-        private ProgressListener(JProgressBar bar){
+    private class ProgressListener implements PropertyChangeListener {
+        private ProgressListener() {
+        }
 
+        private ProgressListener(JProgressBar bar) {
 
         }
 
@@ -124,33 +132,32 @@ support.addPropertyChangeListener(new PropertyChangeListener() {
 
 
     private static void insertTable() {
-        Connection conn = DBAccess.openDB();
 
-        try (
-
-                PreparedStatement ps = conn.prepareStatement("insert into relics values(?,?,?,?,?,?) ")
-
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=project", "sa", "armyant0920");
+             Statement st = conn.createStatement();
+             //ResultSet rs=st.executeQuery("");
+             PreparedStatement ps = conn.prepareStatement("insert into Spot values(?,?,?,?,?,?,?,?) ")
         ) {
-            for(int i=0;i<myList.size();i++){
-                ps.setString(1,myList.get(i).getCaseId());
-                ps.setString(2,myList.get(i).getCaseName());
-                ps.setString(3,myList.get(i).getRegisterReason());
-                ps.setString(4,myList.get(i).getBelongCity());
-                ps.setString(5,myList.get(i).getRepresentImage());
-                ps.setString(6,myList.get(i).getHistoryDevelopment());
+            for (int i = 0; i < myList.size(); i++) {
+                ps.setString(1, myList.get(i).getCaseId());
+                ps.setString(2, myList.get(i).getCaseName());
+                ps.setDate(3, myList.get(i).getSqlDate());
+                ps.setString(4, myList.get(i).getBelongCity());
+                ps.setDouble(5, myList.get(i).getLongitude());
+                ps.setDouble(6, myList.get(i).getLatitude());
+                ps.setString(7, myList.get(i).getRepresentImage());
+                ps.setString(8, myList.get(i).getBriefDescribe());
                 ps.addBatch();
                 ps.clearParameters();
 
             }
-                ps.executeBatch();
+            ps.executeBatch();
             /*int updated[]=ps.executeBatch();
             for(int i=0;i<updated.length;i++){
 
                 System.out.println("result "+i+" ="+updated[i]);
             }*/
             ps.clearBatch();
-            conn.close();
-
 
 
 
@@ -158,18 +165,16 @@ support.addPropertyChangeListener(new PropertyChangeListener() {
             e.printStackTrace();
         }
 
+
         System.out.println("資料匯入資料庫完畢");
 
     }
-    private static void readData(ArrayList list){
 
-        for(int i=0;i<list.size();i++){
+    private static void readData(ArrayList list) {
+        for (int i = 0; i < list.size(); i++) {
             System.out.println(list.get(i));
-
         }
     }
-
-
 
 
 }

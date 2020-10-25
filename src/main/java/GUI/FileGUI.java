@@ -1,5 +1,9 @@
 package GUI;
 
+
+import DBTool.AddressDialog;
+import DBTool.DBRecorder;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -22,7 +26,7 @@ class FileGUI {
     private JTextArea textOutput;
     private JMenu fileMenu,sqlMenu, editMenu;// 定義"檔案"和"子選單"選單
     private JMenuItem openItem, openItem2, saveItem, saveOtherItem, closeItem;// 定義條目"退出"和"子條目"選單項
-    private JMenuItem sql_insertItem;//
+    private JMenuItem sqlItem;//資料庫連線
     private JMenuItem fontItem;//格式Menu的項目
     private FileDialog openDia, saveDia;// 定義"開啟 儲存"對話方塊
     private File file;//定義檔案
@@ -59,6 +63,8 @@ class FileGUI {
         fileMenu.add(closeItem);//將 退出 選單項新增到 檔案 選單上
         bar.add(fileMenu);//將檔案新增到選單欄上
         sqlMenu=new JMenu("資料庫操作");
+        sqlItem=new JMenuItem("連線");
+        sqlMenu.add(sqlItem);
         editMenu = new JMenu("格式");
 
         fontItem = new JMenuItem("字體大小");
@@ -152,7 +158,6 @@ class FileGUI {
             e.printStackTrace();
         }
 
-
     }
 
 
@@ -223,6 +228,17 @@ class FileGUI {
                     System.err.println("IO錯誤");
                     ioException.printStackTrace();
                 }
+            }
+        });
+
+        sqlItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DBRecorder.getInstance();
+                AddressDialog dialog=new AddressDialog(frame,false);
+                dialog.setSize(500, 250);
+                dialog.setLocationRelativeTo(null);
+                dialog.setVisible(true);
             }
         });
 

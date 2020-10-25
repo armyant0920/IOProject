@@ -2,11 +2,10 @@ package DBLab;
 
 import DBTool.DBRecorder;
 
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.sql.*;
-
-import static java.sql.DriverManager.getConnection;
 
 public class LAB2 {
 

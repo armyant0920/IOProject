@@ -1,4 +1,4 @@
-package ImageTool;
+package Tool;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -25,12 +25,47 @@ public class DownloadImage {
 
     }
 
+    /**
+     * 先用了一個很爛的解法,以後再回來處理
+     * @param s
+     * @return
+     */
+    public static URL convertURL(String s){
+
+        String s1=s.substring(0,1+s.lastIndexOf("/"));
+        String s2=s.substring(1+s.lastIndexOf("/",s.lastIndexOf(".")));
+
+        try {
+            s2=URLEncoder.encode(s2,"utf-8");
+            s=(s1+s2);
+            //s=s.substring(0,s.lastIndexOf("+"));
+            System.out.println("解析"+s);
+            return new URL(s);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return  null;
+
+    }
+
     private static URL inputURL() {
         try {
+
             String s=JOptionPane.showInputDialog("輸入網址");
+            String s1=s.substring(0,1+s.lastIndexOf("/"));
+            String s2=s.substring(1+s.lastIndexOf("/",s.lastIndexOf(".")));
+            s2=URLEncoder.encode(s2,"utf-8");
+            s=(s1+s2);
+            s=s.substring(0,s.lastIndexOf("+"));
+//            s=URLEncoder.encode(s,"utf-8");
+//            s=URLEncoder.encode(s,"UTF-8");
 //            String s="https://data.boch.gov.tw/old_upload/_upload/Assets_new/cultural_tourism/226/photo/";
+
 //            s+= URLEncoder.encode("八芝蘭番仔井","utf-8");
 //            s+=".JPG";
+
 
             System.out.println(s);
             System.out.println(URLDecoder.decode(s,"utf-8"));
@@ -91,6 +126,8 @@ public class DownloadImage {
 
     public static void showURLImage(URL url){
         try {
+
+
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestProperty("User-Agent", "Mozilla/5.0");
 
@@ -129,7 +166,7 @@ public class DownloadImage {
 
     }
 
-    private static void readURL(URL url) {
+    public static void readURL(URL url) {
 
         image = null;
 

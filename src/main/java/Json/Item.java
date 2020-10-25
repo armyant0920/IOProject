@@ -4,7 +4,6 @@ import java.util.List;
 
 public class Item {
 
-
     /**
      * caseId : 20140804000001
      * caseName : 毫芒雕刻

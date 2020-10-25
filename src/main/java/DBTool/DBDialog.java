@@ -1,3 +1,4 @@
+/*
 package DBTool;
 
 
@@ -10,17 +11,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.*;
 
+*/
 /**
  * 1.帳號密碼記憶功能
  * 2.讀取資料進度條
- */
+ *//*
+
 
 class AddressDialog extends JDialog implements ActionListener, ItemListener {
 
@@ -33,7 +33,8 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
     JTextField portField = new JTextField();
     JTextField databaseField = new JTextField();
     JTextField userField = new JTextField();
-    JTextField passwordField = new JTextField();
+
+    JPasswordField passwordField = new JPasswordField();
     String[] address = new String[5];
     JButton loginin = new JButton("login");
     JButton cancel = new JButton("cancel");
@@ -82,7 +83,7 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
         cancel.addActionListener(this);
         //
         this.add(radio);
-        radio.setSelected(DBRecorder.isRemember());
+        radio.setSelected(DBRecorder.getRemember());
         radio.addItemListener(this);
 
     }
@@ -109,6 +110,7 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
 
             }else{
                 DBRecorder.setRemember(true);
+                DBRecorder.updateFile();
 
             }
             try(
@@ -120,13 +122,7 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
             ){
                 JOptionPane.showMessageDialog(null,"Connected to "+DBRecorder.getDatabase(),"message",JOptionPane.INFORMATION_MESSAGE);
                 //概念是不重複的table_name,內含column_name & data_type
-//                Set
-                ArrayList<Meta.Column>cols;
-
-//                Meta.Column column=new Meta.Column();
-                Map<Meta.Table, Meta.Column> schema=new HashMap<>();
                 String tempName="null";//暫存表格
-
                 Vector<Meta.Table> tableList=new Vector<>();//預先準備這個DB的所有表格資料
                 Meta.Table tempTable=null;
                 while(rs.next()){
@@ -154,6 +150,7 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
                 //執行後顯示dialog
 //                String s[]={"C","D","e"};
                 DB_tb_select select=new DB_tb_select(tableList);
+//                select.setModal(true);
                 Meta.Table pick= select.getKey();
                 DBRecorder.executeQuery(pick);
 //                System.out.println(select.getResult());
@@ -161,13 +158,13 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
 //                Meta.Table table_selected=dialog.getResult();//取得選取的table
 //                DBRecorder.executeQuery(table_selected);
 
-               /* DB_TableSelectDialog dialog=new DB_TableSelectDialog(tableList);
+               */
+/* DB_TableSelectDialog dialog=new DB_TableSelectDialog(tableList);
 
 
 
 
-                //將table資料另開視窗顯示*/
-
+                //將table資料另開視窗顯示*//*
 
 
             } catch (SQLException throwables) {
@@ -176,7 +173,8 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
 
 
 
-            /*DBRecorder.updateParams(getAddress());
+            */
+/*DBRecorder.updateParams(getAddress());
             if (!remember) {
                 DBRecorder.deleteFile();
             }else{
@@ -199,7 +197,8 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
 
             } else {
                 JOptionPane.showMessageDialog(null, "connect fail", "DB", JOptionPane.ERROR_MESSAGE);
-            }*/
+            }*//*
+
         }
         if (e.getSource() == cancel) {
             this.dispose();
@@ -225,9 +224,9 @@ class AddressDialog extends JDialog implements ActionListener, ItemListener {
 }
 
 public class DBDialog extends JFrame {
-    AddressDialog dialog = new AddressDialog(this, false);
 
-    public DBDialog(String title) {
+
+    public DBDialog(String title) {//如果要設定標題的話...
         super(title);
         init();
     }
@@ -264,4 +263,4 @@ public class DBDialog extends JFrame {
         frame.setVisible(true);
 
     }
-}
+}*/

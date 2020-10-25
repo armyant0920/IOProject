@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-public class DB_tb_select extends JDialog {
+public class DB_tb_select extends JFrame {
     private JButton button1;
     private JButton button2;
     private JComboBox comboBox1;
@@ -27,18 +27,12 @@ public class DB_tb_select extends JDialog {
             list.add(t.getTable_name());
         }
 
-//        list.add("A");
-//        list.add("B");
-//        list.add("C");
-
         setContentPane(contentPane);
-        setModal(true);
+        //setModal(true);
         getRootPane().setDefaultButton(button1);
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
                     onOK();
-
                 }
             }
         );
@@ -64,6 +58,7 @@ public class DB_tb_select extends JDialog {
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 //        createUIComponents();
+        comboBox1.setSelectedItem(list.firstElement());
         pack();
         setLocationRelativeTo(null);
 
@@ -77,8 +72,10 @@ public class DB_tb_select extends JDialog {
     }
     private void onOK()  {//
         key =(String)comboBox1.getSelectedItem();
-        setVisible(false);
-        dispose();
+        DBRecorder.executeQuery(map.get(key));
+//        this.toBack();
+//       this.setModal(false);
+//        dispose();
     }
     public Meta.Table getKey(){
         setVisible(true);
@@ -93,6 +90,7 @@ public class DB_tb_select extends JDialog {
         // TODO: place custom component creation code here
 
         comboBox1=new JComboBox(list);
+
         ItemListener itemListener = new
 
                 ItemListener() {

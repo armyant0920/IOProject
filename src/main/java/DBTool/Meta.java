@@ -48,18 +48,21 @@ public class Meta {
 
 
 
-   /* public static Vector<Column> getVColumns(ResultSet rs) throws SQLException {
+    public static Vector<Column> getVColumns(ResultSet rs) throws SQLException {
+
         Vector<Column>columns=new Vector<>();
         ResultSetMetaData rsmd=rs.getMetaData();
+//        String table_name=rsmd.getTableName(0);
+//        System.out.println("測試!!!!"+table_name);
         for(int i=1;i<=rsmd.getColumnCount();i++){
 
-            columns.add(rsmd.getColumnName(i),rsmd.getColumnType(i));
-            columns.add(new Column(rsmd.getColumnName(i)));//rsmd.getColumnType(i)
+//            columns.add(rsmd.getColumnName(i),rsmd.getColumnType(i));
+            columns.add(new Column(rsmd.getColumnName(i),""));//rsmd.getColumnType(i)
 
         }
         return columns;
 
-    }*/
+    }
 
 
 
@@ -84,7 +87,7 @@ public class Meta {
         public String getData_type() {
             return data_type;
         }
-        //原則上部會去改原始資料表的結構,而且也不見得好改
+        //原則上不會去改原始資料表的結構,而且也不見得好改
       /*  public void setData_type(String data_type) {
             this.data_type = data_type;
         }*/
