@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="IOProject:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/IOProject_jar</output-path>
+    <root id="root">
+      <element id="archive" name="IOProject.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="IOProject" />
+      </element>
+      <element id="library" level="project" name="gson-2.8.6" />
+      <element id="library" level="project" name="json-20200518" />
+      <element id="library" level="project" name="mssql-jdbc-7.4.1.jre8" />
+      <element id="library" level="project" name="commons-dbcp2-2.1.1" />
+    </root>
+  </artifact>
+</component>

@@ -106,7 +106,8 @@ public class DBRecorder {
             try {
                 String s = readRecord(recordFile);
                 System.out.println(s);
-                Gson gson = new Gson();
+                Gson gson=new Gson();
+
                 DBParam param = gson.fromJson(s, DBParam.class);
                 if (param.getRemember() == true) {
                     server = param.getServer();
@@ -431,10 +432,6 @@ public class DBRecorder {
         btn_ExportCSV.setBackground(Color.GREEN);
         southjPanel.add(btn_ExportCSV);
         //
-        JButton btn_ExportJson = new JButton("export JSON");
-        btn_ExportJson.setBackground(Color.RED);
-        southjPanel.add(btn_ExportJson);
-        //
         JButton btn_ExportJson2 = new JButton("export JSON_ver2");
         btn_ExportJson2.setBackground(Color.GREEN);
         southjPanel.add(btn_ExportJson2);
@@ -447,6 +444,14 @@ public class DBRecorder {
         btn_USQL.setBackground(Color.YELLOW);
         southjPanel.add(btn_USQL);
         //
+        JButton btn_Truncate = new JButton("truncate");
+        btn_Truncate.setBackground(Color.YELLOW);
+        southjPanel.add(btn_Truncate);
+        //
+        JButton btn_ExportJson = new JButton("export JSON");
+        btn_ExportJson.setBackground(Color.RED);
+        southjPanel.add(btn_ExportJson);
+        //
         JButton btn_Image = new JButton("imageURL");
         btn_Image.setBackground(Color.RED);
         southjPanel.add(btn_Image);
@@ -458,11 +463,6 @@ public class DBRecorder {
         btn_MAP.setBackground(Color.RED);
         southjPanel.add(btn_MAP);
         //
-        JButton btn_Truncate = new JButton("truncate");
-        btn_Truncate.setBackground(Color.YELLOW);
-        southjPanel.add(btn_Truncate);
-        //
-
 
         cp.add(southjPanel, BorderLayout.SOUTH);
 
@@ -481,14 +481,11 @@ public class DBRecorder {
                 File file = showLoadDialog(frame);
 
 
-                try {
+
                     insertFromCSV(table_name, file);
                     JOptionPane.showMessageDialog(frame, Dialog_Message.CSV_INSERTED, Dialog_MsgTitle.MSG, JOptionPane.INFORMATION_MESSAGE);
                     refreshTable(table_name, table, dtm);
-                } catch (Exception err) {
-                    JOptionPane.showMessageDialog(frame, err.getMessage(), Dialog_MsgTitle.ERROR, JOptionPane.INFORMATION_MESSAGE);
 
-                }
 
             }
         });
@@ -646,7 +643,6 @@ public class DBRecorder {
             }
         });
 
-
         //下Query SQL指令
         btn_QSQL.addActionListener(new ActionListener() {
             @Override
@@ -672,7 +668,6 @@ public class DBRecorder {
                 }
             }
         });
-
 
         //含insert、update、delete等DML語言
         btn_USQL.addActionListener(new ActionListener() {
@@ -795,16 +790,31 @@ public class DBRecorder {
 
             sql += values;
             System.out.println(sql);
-            try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=project", "sa", "armyant0920");
+
+            try (Connection conn = DBRecorder.getConnect();
                  PreparedStatement ps = conn.prepareStatement(sql);) {
 
                 String line = null;
                 while ((line = br.readLine()) != null) {
-                    String content[] = line.split(",");
-                    for (int i = 1; i <= columnNames.length; i++) {
-                        ps.setString(i, content[i - 1]);
+                    List<String> data=new ArrayList();
+                    String content[] = line.split(",");//最後一個如果是空抓不到?
+                    for(int i=0;i<content.length;i++){
+                        data.add(content[i]);
+                    }
+                    if(data.size()<columnNames.length){
 
+                        for(int i=0;i<=(columnNames.length-data.size());i++){
+                            data.add("");
 
+                        }
+                        System.out.println(data.size());
+                    }
+                    for(int i=0;i<content.length;i++){
+                        System.out.print(content[i]+",\t");
+                    }
+                    System.out.println();
+                    for (int i = 1; i <=columnNames.length; i++) {
+                        ps.setString(i, data.get(i-1));
                     }
                     ps.addBatch();
                     ps.clearParameters();
@@ -812,14 +822,9 @@ public class DBRecorder {
                 int[] result = ps.executeBatch();
                 ps.clearBatch();
                 for (int i = 0; i < result.length; i++) {
-
                     System.out.printf("index %d result=%s\n", i, result[i]);
-
                 }
-
-
             }
-
 
         } catch (SQLException e) {
             e.printStackTrace();

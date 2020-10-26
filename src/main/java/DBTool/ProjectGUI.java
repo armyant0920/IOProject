@@ -2,6 +2,9 @@ package DBTool;
 
 
 import Json.SpotPojo;
+
+
+import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -179,14 +182,14 @@ class ProjectGUI {
 
 
                         SpotPojo spot = new SpotPojo(
-                                data[0],
-                                data[1],
-                                data[2],
-                                data[3],
-                                Double.parseDouble(data[4]),
-                                Double.parseDouble(data[5]),
-                                data[6],
-                                data[7]
+                                data[0],//caseID
+                                data[1],//caseName
+                                data[2],//registerDate
+                                data[3],//belongCity
+                                Double.parseDouble(data[4]),//longitude
+                                Double.parseDouble(data[5]),//latitude
+                                data[6],//representImage
+                                data[7]//briefDescribe
                         );
                         spotList.add(spot);
                         textOutput.append(line + "\r\n");//顯示每一行內容
@@ -427,6 +430,7 @@ class ProjectGUI {
     }
 
     public static void main(String[] args) {
+
 
         new ProjectGUI();
         System.out.println("┴┬┴┬／￣＼＿／￣＼\r\n" +

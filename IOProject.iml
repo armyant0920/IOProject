@@ -9,14 +9,11 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="json-20200518" level="project" />
-    <orderEntry type="library" name="mssql-jdbc-7.4.1.jre8" level="project" />
-    <orderEntry type="library" name="gson-2.3.1" level="project" />
-    <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
-    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.5" level="project" />
-    <orderEntry type="library" name="Maven: org.json:json:20200518" level="project" />
-    <orderEntry type="library" name="commons-dbcp2-2.1.1" level="project" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="library" exported="" name="mssql-jdbc-7.4.1.jre8" level="project" />
+    <orderEntry type="library" exported="" name="commons-dbcp2-2.1.1" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.8.6" level="project" />
+    <orderEntry type="library" exported="" name="json-20200518" level="project" />
   </component>
 </module>

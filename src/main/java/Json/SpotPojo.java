@@ -88,7 +88,10 @@ public class SpotPojo {
     }
     public Date getSqlDate(){
         String[]date=this.registerDate.split("-");
-
+        for(int i=0;i<date.length;i++){
+            System.out.print(date[i]+",");
+        }
+        System.out.println();
         return new Date(Integer.parseInt(date[0])-1900,Integer.parseInt(date[1]),Integer.parseInt(date[2]));
     }
 

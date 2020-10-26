@@ -94,7 +94,6 @@ public class AddressDialog extends JDialog implements ActionListener, ItemListen
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginin) {
-
             DBRecorder.updateParams(getAddress());
             DBRecorder.updateFile();
 
@@ -130,6 +129,8 @@ public class AddressDialog extends JDialog implements ActionListener, ItemListen
 
                 DB_tb_select select = new DB_tb_select(tableList);
                 select.setVisible(true);
+                select.setTitle("選擇表格");
+                select.setSize(500,100);
 //                Meta.Table pick = select.getKey();
 
 //                DBRecorder.executeQuery(pick);
