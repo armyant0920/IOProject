@@ -29,6 +29,8 @@ import static javax.swing.JOptionPane.YES_OPTION;
 
 public class DBRecorder {
     private String dirPath;//未來考慮做一個設定選項讓使用者自訂路徑
+
+
     private static BasicDataSource ds;
     private final String recordPath = "Login.txt";
     private final String SYS_MESSAGE = "Login";

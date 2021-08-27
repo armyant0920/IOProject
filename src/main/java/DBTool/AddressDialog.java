@@ -99,7 +99,7 @@ public class AddressDialog extends JDialog implements ActionListener, ItemListen
 
             try (
                     Statement st = DBRecorder.getStatement();
-                    ResultSet rs = st.executeQuery("use " + DBRecorder.getDatabase() + " select table_name,column_name,data_type from INFORMATION_SCHEMA.COLUMNS")
+                    ResultSet rs = st.executeQuery("use " + DBRecorder.getDatabase() + " select TABLE_SCHEMA,table_name,column_name,data_type from INFORMATION_SCHEMA.COLUMNS")
 
             ) {
                 JOptionPane.showMessageDialog(null, "Connected to " + DBRecorder.getDatabase(), "message", JOptionPane.INFORMATION_MESSAGE);
@@ -109,7 +109,7 @@ public class AddressDialog extends JDialog implements ActionListener, ItemListen
                 Meta.Table tempTable = null;
                 while (rs.next()) {
                     //餵資料給DBRecorder,並準備selectTable
-                    String table_name = rs.getString("table_name");//
+                    String table_name = rs.getString("TABLE_SCHEMA")+"."+rs.getString("table_name");//
                     String column_name = rs.getString("column_name");
                     String data_type = rs.getString("data_type");
 

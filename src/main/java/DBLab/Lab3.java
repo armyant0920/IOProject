@@ -49,8 +49,8 @@ public class Lab3 {
 
         try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=project", "sa", "manager");
              Statement st=conn.createStatement();
+             PreparedStatement ps= conn.prepareStatement("select *  from errortable");
 
-             PreparedStatement ps=conn.prepareStatement("select *  from errortable");
         )
         {
             try(ResultSet rs=ps.executeQuery()){
